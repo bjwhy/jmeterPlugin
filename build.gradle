@@ -1,0 +1,44 @@
+group 'com.wm.servertest'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = 1.7
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.apache.thrift', name: 'libthrift', version: '0.9.3'
+    compile group: 'io.netty', name: 'netty-all', version: '4.0.34.Final'
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.54'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.8'
+    compile group: 'org.fusesource.mqtt-client', name: 'mqtt-client', version: '1.13'
+    compile group: 'org.apache.kafka', name: 'kafka-clients', version: '0.9.0.1'
+    compile group: 'org.apache.kafka', name: 'kafka_2.11', version: '0.9.0.1'
+    compile files('lib/ApacheJMeter_core-3.2.jar')
+    compile files('lib/ApacheJMeter_java-3.2.jar')
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
+    }
+}
+
+shadowJar {
+    exclude 'ApacheJMeter_*.jar'
+    dependencies {
+        exclude(dependency('junit:junit:.*'))
+    }
+    configurations = [project.configurations.compile]
+    zip64 true
+}
